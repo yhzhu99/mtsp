@@ -205,7 +205,7 @@ class ACO(object):
 seed = 42
 num_drones = 10
 num_city = 10
-epochs = 100
+epochs = 10
 
 # 固定随机数
 np.random.seed(seed)
@@ -242,6 +242,11 @@ fig, axs = plt.subplots(2, 1, sharex=False, sharey=False)
 axs[0].scatter(Best_path[:, 0], Best_path[:, 1])
 Best_path = np.vstack([Best_path, Best_path[0]])
 axs[0].plot(Best_path[:, 0], Best_path[:, 1])
+# Draw start point
+drawing_colored_circle = plt.Circle(Best_path[0], 10, color="red")
+
+axs[0].add_artist(drawing_colored_circle)
+
 axs[0].set_title("Searched Best Solution")
 iterations = aco.iter_x
 best_record = aco.iter_y
