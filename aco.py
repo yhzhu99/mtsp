@@ -23,6 +23,8 @@ class ACO(object):
         # 存储存储每个温度下的最终路径，画出收敛图
         self.iter_x = []
         self.iter_y = []
+
+        # self.start_points_idx = []
         # self.greedy_init(self.dis_mat,100,num_city)
 
     def greedy_init(self, dis_mat, num_total, num_city):
@@ -99,8 +101,12 @@ class ACO(object):
                 unvisit.remove(current)
                 j += 1
 
+    # 关键: 修改distance matrix，适配多旅行商问题
+
     # 计算不同城市之间的距离
     def compute_dis_mat(self, num_city, location):
+        # print("Location:", location)
+
         dis_mat = np.zeros((num_city, num_city))
         for i in range(num_city):
             for j in range(num_city):
@@ -111,17 +117,45 @@ class ACO(object):
                 b = location[j]
                 tmp = np.sqrt(sum([(x[0] - x[1]) ** 2 for x in zip(a, b)]))
                 dis_mat[i][j] = tmp
+
+        # self.start_points_idx = to_process_idx
+
+        print("to process indices:", to_process_idx)
+        for i in to_process_idx:
+            for j in to_process_idx:
+                print("processing:", i, j, dis_mat[i][j])
+                dis_mat[i][j] = np.inf
+
         return dis_mat
 
     # 计算一条路径的长度
-    def compute_pathlen(self, path, dis_mat):
+    def compute_pathlen(self, tmp_path, dis_mat):
+
+        # print("Start!!!")
+
+        path = tmp_path.copy()
+        if path[0] not in to_process_idx:
+            path.insert(0, 0)
+
+        if path[-1] not in to_process_idx:
+            path.append(0)
+
         a = path[0]
         b = path[-1]
-        result = dis_mat[a][b]
+
+        result = dis_mat[a][b]  # 首末城市之间的距离
+        if a in to_process_idx and b in to_process_idx:
+            result = 0
         for i in range(len(path) - 1):
             a = path[i]
             b = path[i + 1]
-            result += dis_mat[a][b]
+            if a in to_process_idx and b in to_process_idx:
+                result += 0
+            else:
+                result += dis_mat[a][b]
+        # 关键：此时，原点-原点的距离不再是inf，而是0
+        # print("End!!!")
+
         return result
 
     # 计算一个群体的长度
@@ -203,7 +237,7 @@ class ACO(object):
 
 
 seed = 42
-num_drones = 10
+num_drones = 3
 num_city = 10
 epochs = 10
 
@@ -211,12 +245,14 @@ epochs = 10
 np.random.seed(seed)
 
 
-## 初始化坐标
-data = []
-for i in range(num_city):
-    x = np.random.randint(0, 500)
-    y = np.random.randint(0, 500)
+## 初始化坐标 (第一个点是基地的起点，起点的坐标是 0,0 )
+data = [[0, 0]]
+for i in range(num_city - 1):
+    x = np.random.randint(1, 500)
+    y = np.random.randint(1, 500)
     data.append([x, y])
+
+print("Start from:", data[0])
 
 # data = read_tsp("data/st70.tsp")
 
@@ -225,12 +261,31 @@ data = np.array(data)
 
 # print(data, data.shape)
 
-# 加上一行因为会回到起点
-show_data = np.vstack([data, data[0]])
+# # 加上一行因为会回到起点
+# show_data = np.vstack([data, data[0]])
+
+# 关键：有N架无人机，则再增加N-1个`点` (坐标是起始点)，这些点之间的距离是inf
+for d in range(num_drones - 1):
+    data = np.vstack([data, data[0]])
+    num_city += 1  # 增加欺骗城市
+
+to_process_idx = [0]
+# print("start point:", location[0])
+for d in range(1, num_drones):  # 1, ... drone-1
+    # print("added base point:", location[num_city - d])
+    to_process_idx.append(num_city - d)
+
+print(data)
+
+print("City len assert:", num_city, data.shape[0])
+
 # print(show_data, show_data.shape)
 
 aco = ACO(num_city=data.shape[0], data=data.copy(), num_drones=num_drones)
 Best_path, Best = aco.run()
+
+
+print("Best path:", Best_path)
 print(f"Searched best path length: {Best}")
 # Best_path = np.vstack([Best_path, Best_path[0]])
 # print(Best_path)
@@ -241,6 +296,8 @@ print(f"Searched best path length: {Best}")
 fig, axs = plt.subplots(2, 1, sharex=False, sharey=False)
 axs[0].scatter(Best_path[:, 0], Best_path[:, 1])
 Best_path = np.vstack([Best_path, Best_path[0]])
+Best_path = np.vstack([Best_path[0], Best_path])
+
 axs[0].plot(Best_path[:, 0], Best_path[:, 1])
 # Draw start point
 drawing_colored_circle = plt.Circle(Best_path[0], 10, color="red")
