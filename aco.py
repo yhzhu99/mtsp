@@ -120,10 +120,10 @@ class ACO(object):
 
         # self.start_points_idx = to_process_idx
 
-        print("to process indices:", to_process_idx)
+        # print("to process indices:", to_process_idx)
         for i in to_process_idx:
             for j in to_process_idx:
-                print("processing:", i, j, dis_mat[i][j])
+                # print("processing:", i, j, dis_mat[i][j])
                 dis_mat[i][j] = np.inf
 
         return dis_mat
@@ -204,7 +204,7 @@ class ACO(object):
             # 保存结果
             self.iter_x.append(cnt)
             self.iter_y.append(best_lenth)
-            print(cnt, best_lenth)
+            print(f"Epoch {cnt:3}: {best_lenth:.3f}")
         return best_lenth, best_path
 
     def run(self):
@@ -252,7 +252,7 @@ for i in range(num_city - 1):
     y = np.random.randint(1, 500)
     data.append([x, y])
 
-print("Start from:", data[0])
+# print("Start from:", data[0])
 
 # data = read_tsp("data/st70.tsp")
 
@@ -275,9 +275,9 @@ for d in range(1, num_drones):  # 1, ... drone-1
     # print("added base point:", location[num_city - d])
     to_process_idx.append(num_city - d)
 
-print(data)
+# print(data)
 
-print("City len assert:", num_city, data.shape[0])
+# print("City len assert:", num_city, data.shape[0])
 
 # print(show_data, show_data.shape)
 
@@ -285,7 +285,7 @@ aco = ACO(num_city=data.shape[0], data=data.copy(), num_drones=num_drones)
 Best_path, Best = aco.run()
 
 
-print("Best path:", Best_path)
+# print("Best path:", Best_path)
 print(f"Searched best path length: {Best}")
 # Best_path = np.vstack([Best_path, Best_path[0]])
 # print(Best_path)
