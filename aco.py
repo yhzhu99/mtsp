@@ -205,7 +205,7 @@ class ACO(object):
 seed = 42
 num_drones = 10
 num_city = 10
-epochs = 10
+epochs = 100
 
 # 固定随机数
 np.random.seed(seed)
@@ -231,9 +231,20 @@ show_data = np.vstack([data, data[0]])
 
 aco = ACO(num_city=data.shape[0], data=data.copy(), num_drones=num_drones)
 Best_path, Best = aco.run()
-print(Best)
+print(f"Searched best path length: {Best}")
+# Best_path = np.vstack([Best_path, Best_path[0]])
+# print(Best_path)
+# plt.plot(Best_path[:, 0], Best_path[:, 1])
+# plt.title("Searched Best Solution")
+# plt.show()
+
+fig, axs = plt.subplots(2, 1, sharex=False, sharey=False)
+axs[0].scatter(Best_path[:, 0], Best_path[:, 1])
 Best_path = np.vstack([Best_path, Best_path[0]])
-print(Best_path)
-plt.plot(Best_path[:, 0], Best_path[:, 1])
-plt.title("st70:蚁群算法规划结果")
+axs[0].plot(Best_path[:, 0], Best_path[:, 1])
+axs[0].set_title("Searched Best Solution")
+iterations = aco.iter_x
+best_record = aco.iter_y
+axs[1].plot(iterations, best_record)
+axs[1].set_title("Convergence Curve")
 plt.show()
