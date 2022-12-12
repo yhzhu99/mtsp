@@ -183,6 +183,7 @@ class ACO(object):
     def aco(self):
         best_lenth = math.inf
         best_path = None
+        early_stop_cnt = 0
         for cnt in range(epochs):
             # 生成新的蚁群
             self.get_ants(self.num_city)  # out>>self.Table
@@ -198,6 +199,12 @@ class ACO(object):
             if tmp_lenth < best_lenth:
                 best_lenth = tmp_lenth
                 best_path = tmp_path
+                early_stop_cnt = 0
+            else:
+                early_stop_cnt += 1
+            if early_stop_cnt == 20:  # 若连续20次没有性能提升，则早停
+                break
+
             # 更新信息素
             self.update_Tau()
 
@@ -237,8 +244,8 @@ class ACO(object):
 
 
 seed = 42
-num_drones = 20
-num_city = 200
+num_drones = 1
+num_city = 10
 epochs = 100
 
 # 固定随机数
