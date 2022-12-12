@@ -1,23 +1,22 @@
 import math
-import random
 
 import matplotlib.pyplot as plt
 import numpy as np
 
 
 class ACO(object):
-    def __init__(self, num_city, data):
+    def __init__(self, num_city, data, num_drones):
         self.m = 50  # 蚂蚁数量
         self.alpha = 1  # 信息素重要程度因子
         self.beta = 5  # 启发函数重要因子
         self.rho = 0.1  # 信息素挥发因子
         self.Q = 1  # 常量系数
         self.num_city = num_city  # 城市规模
+        self.num_drones = num_drones  # 有多少架无人机参与任务
         self.location = data  # 城市坐标
         self.Tau = np.zeros([num_city, num_city])  # 信息素矩阵
         self.Table = [[0 for _ in range(num_city)] for _ in range(self.m)]  # 生成的蚁群
         self.iter = 1
-        self.iter_max = 500
         self.dis_mat = self.compute_dis_mat(num_city, self.location)  # 计算城市之间的距离矩阵
         self.Eta = 10.0 / self.dis_mat  # 启发式函数
         self.paths = None  # 蚁群中每个个体的长度
@@ -150,7 +149,7 @@ class ACO(object):
     def aco(self):
         best_lenth = math.inf
         best_path = None
-        for cnt in range(self.iter_max):
+        for cnt in range(epochs):
             # 生成新的蚁群
             self.get_ants(self.num_city)  # out>>self.Table
             self.paths = self.compute_paths(self.Table)
@@ -179,34 +178,50 @@ class ACO(object):
         return self.location[best_path], best_length
 
 
-# 读取数据
-def read_tsp(path):
-    lines = open(path, "r").readlines()
-    assert "NODE_COORD_SECTION\n" in lines
-    index = lines.index("NODE_COORD_SECTION\n")
-    data = lines[index + 1 : -1]
-    tmp = []
-    for line in data:
-        line = line.strip().split(" ")
-        if line[0] == "EOF":
-            continue
-        tmpline = []
-        for x in line:
-            if x == "":
-                continue
-            else:
-                tmpline.append(float(x))
-        if tmpline == []:
-            continue
-        tmp.append(tmpline)
-    data = tmp
-    return data
+# # 读取数据
+# def read_tsp(path):
+#     lines = open(path, "r").readlines()
+#     assert "NODE_COORD_SECTION\n" in lines
+#     index = lines.index("NODE_COORD_SECTION\n")
+#     data = lines[index + 1 : -1]
+#     tmp = []
+#     for line in data:
+#         line = line.strip().split(" ")
+#         if line[0] == "EOF":
+#             continue
+#         tmpline = []
+#         for x in line:
+#             if x == "":
+#                 continue
+#             else:
+#                 tmpline.append(float(x))
+#         if tmpline == []:
+#             continue
+#         tmp.append(tmpline)
+#     data = tmp
+#     return data
 
 
-data = read_tsp("data/st70.tsp")
+seed = 42
+num_drones = 10
+num_city = 10
+epochs = 10
+
+# 固定随机数
+np.random.seed(seed)
+
+
+## 初始化坐标
+data = []
+for i in range(num_city):
+    x = np.random.randint(0, 500)
+    y = np.random.randint(0, 500)
+    data.append([x, y])
+
+# data = read_tsp("data/st70.tsp")
 
 data = np.array(data)
-data = data[:, 1:]
+# data = data[:, 1:]
 
 # print(data, data.shape)
 
@@ -214,10 +229,11 @@ data = data[:, 1:]
 show_data = np.vstack([data, data[0]])
 # print(show_data, show_data.shape)
 
-aco = ACO(num_city=data.shape[0], data=data.copy())
+aco = ACO(num_city=data.shape[0], data=data.copy(), num_drones=num_drones)
 Best_path, Best = aco.run()
 print(Best)
 Best_path = np.vstack([Best_path, Best_path[0]])
+print(Best_path)
 plt.plot(Best_path[:, 0], Best_path[:, 1])
 plt.title("st70:蚁群算法规划结果")
 plt.show()
