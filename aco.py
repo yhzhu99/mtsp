@@ -237,9 +237,9 @@ class ACO(object):
 
 
 seed = 42
-num_drones = 3
-num_city = 10
-epochs = 10
+num_drones = 20
+num_city = 200
+epochs = 100
 
 # 固定随机数
 np.random.seed(seed)
@@ -248,8 +248,11 @@ np.random.seed(seed)
 ## 初始化坐标 (第一个点是基地的起点，起点的坐标是 0,0 )
 data = [[0, 0]]
 for i in range(num_city - 1):
-    x = np.random.randint(1, 500)
-    y = np.random.randint(1, 500)
+    while True:
+        x = np.random.randint(-250, 250)
+        y = np.random.randint(-250, 250)
+        if x != 0 or y != 0:
+            break
     data.append([x, y])
 
 # print("Start from:", data[0])
@@ -298,11 +301,14 @@ axs[0].scatter(Best_path[:, 0], Best_path[:, 1])
 Best_path = np.vstack([Best_path, Best_path[0]])
 Best_path = np.vstack([Best_path[0], Best_path])
 
-axs[0].plot(Best_path[:, 0], Best_path[:, 1])
-# Draw start point
-drawing_colored_circle = plt.Circle(Best_path[0], 10, color="red")
+axs[0].plot(Best_path[:, 0], Best_path[:, 1], color="green", alpha=0.1)
 
-axs[0].add_artist(drawing_colored_circle)
+# Draw start point
+# drawing_colored_circle = plt.Circle([0, 0], radius=10, color="red")
+
+# axs[0].add_artist(drawing_colored_circle)
+axs[0].plot([0], [0], marker="*", markersize=10, color="red")
+
 
 axs[0].set_title("Searched Best Solution")
 iterations = aco.iter_x
