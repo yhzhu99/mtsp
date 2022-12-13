@@ -1,6 +1,20 @@
-# Genetic Algorithm to solve Multiple Traveling Salesman Problem
-Here graph is covered using different agents having different routes.
+# 群体智能大作业：基于仿生群智算法的无人机任务分配 (多旅行商问题的求解)
 
-Routes only intersect at initial node.
+## Baselines
 
-main.py 作为 Baseline.
+- [x] ACO 蚁群算法
+
+## Experiments
+
+| 算法 | 任务点数 | 无人机数 | 求解路径长度 |
+| ---- | -------- | -------- | ------------ |
+| ACO  | 30       | 10       |  3000.576    |
+| ACO  | 200      | 20       |  9468.424   |
+| ACO  | 500      | 30       |              |
+|      |          |          |              |
+|      |          |          |              |
+|      |          |          |              |
+|      |          |          |              |
+
+
+
