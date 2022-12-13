@@ -267,7 +267,7 @@ class GA(object):
                 early_stop_cnt = 0
             else:
                 early_stop_cnt += 1
-            if early_stop_cnt == 20:  # 若连续20次没有性能提升，则早停
+            if early_stop_cnt == 50:  # 若连续50次没有性能提升，则早停
                 break
             self.best_record.append(1.0 / best_score)
             best_length = 1.0 / best_score
@@ -301,9 +301,9 @@ class GA(object):
 
 
 seed = 42
-num_drones = 10
-num_city = 30
-epochs = 200
+num_drones = 30
+num_city = 500
+epochs = 3000
 
 # 固定随机数
 np.random.seed(seed)
@@ -337,7 +337,7 @@ for d in range(1, num_drones):  # 1, ... drone-1
     # print("added base point:", location[num_city - d])
     to_process_idx.append(num_city - d)
 
-model = GA(num_city=data.shape[0], num_total=50, data=data.copy())
+model = GA(num_city=data.shape[0], num_total=20, data=data.copy())
 Best_path, Best = model.run()
 # print(Best_path)
 iterations = model.iter_x
