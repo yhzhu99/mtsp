@@ -276,30 +276,6 @@ class GA(object):
         return self.location[BEST_LIST], 1.0 / best_score
 
 
-# # 读取数据
-# def read_tsp(path):
-#     lines = open(path, 'r').readlines()
-#     assert 'NODE_COORD_SECTION\n' in lines
-#     index = lines.index('NODE_COORD_SECTION\n')
-#     data = lines[index + 1:-1]
-#     tmp = []
-#     for line in data:
-#         line = line.strip().split(' ')
-#         if line[0] == 'EOF':
-#             continue
-#         tmpline = []
-#         for x in line:
-#             if x == '':
-#                 continue
-#             else:
-#                 tmpline.append(float(x))
-#         if tmpline == []:
-#             continue
-#         tmp.append(tmpline)
-#     data = tmp
-#     return data
-
-
 seed = 42
 num_drones = 30
 num_city = 500
@@ -319,10 +295,6 @@ for i in range(num_city - 1):
         if x != 0 or y != 0:
             break
     data.append([x, y])
-
-# print("Start from:", data[0])
-
-# data = read_tsp("data/st70.tsp")
 
 data = np.array(data)
 

@@ -221,30 +221,6 @@ class ACO(object):
         return self.location[best_path], best_length
 
 
-# # 读取数据
-# def read_tsp(path):
-#     lines = open(path, "r").readlines()
-#     assert "NODE_COORD_SECTION\n" in lines
-#     index = lines.index("NODE_COORD_SECTION\n")
-#     data = lines[index + 1 : -1]
-#     tmp = []
-#     for line in data:
-#         line = line.strip().split(" ")
-#         if line[0] == "EOF":
-#             continue
-#         tmpline = []
-#         for x in line:
-#             if x == "":
-#                 continue
-#             else:
-#                 tmpline.append(float(x))
-#         if tmpline == []:
-#             continue
-#         tmp.append(tmpline)
-#     data = tmp
-#     return data
-
-
 seed = 42
 num_drones = 20
 num_city = 200
@@ -266,15 +242,9 @@ for i in range(num_city - 1):
 
 # print("Start from:", data[0])
 
-# data = read_tsp("data/st70.tsp")
-
 data = np.array(data)
-# data = data[:, 1:]
 
 # print(data, data.shape)
-
-# # 加上一行因为会回到起点
-# show_data = np.vstack([data, data[0]])
 
 # 关键：有N架无人机，则再增加N-1个`点` (坐标是起始点)，这些点之间的距离是inf
 for d in range(num_drones - 1):
