@@ -248,7 +248,7 @@ class ACO(object):
 seed = 42
 num_drones = 20
 num_city = 200
-epochs = 100
+epochs = 200
 
 # 固定随机数
 np.random.seed(seed)
@@ -298,5 +298,5 @@ Best_path, Best = aco.run()
 iterations = aco.iter_x
 best_record = aco.iter_y
 
-print(f"Best Path Length: {Best}")
+print(f"Best Path Length: {Best:.3f}")
 plot_util.plot_results(Best_path, iterations, best_record)
