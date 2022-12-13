@@ -3,6 +3,8 @@ import math
 import matplotlib.pyplot as plt
 import numpy as np
 
+import plot_util
+
 
 class ACO(object):
     def __init__(self, num_city, data, num_drones):
@@ -244,8 +246,8 @@ class ACO(object):
 
 
 seed = 42
-num_drones = 1
-num_city = 10
+num_drones = 20
+num_city = 200
 epochs = 100
 
 # 固定随机数
@@ -293,33 +295,8 @@ for d in range(1, num_drones):  # 1, ... drone-1
 
 aco = ACO(num_city=data.shape[0], data=data.copy(), num_drones=num_drones)
 Best_path, Best = aco.run()
-
-
-# print("Best path:", Best_path)
-print(f"Searched best path length: {Best}")
-# Best_path = np.vstack([Best_path, Best_path[0]])
-# print(Best_path)
-# plt.plot(Best_path[:, 0], Best_path[:, 1])
-# plt.title("Searched Best Solution")
-# plt.show()
-
-fig, axs = plt.subplots(2, 1, sharex=False, sharey=False)
-axs[0].scatter(Best_path[:, 0], Best_path[:, 1])
-Best_path = np.vstack([Best_path, Best_path[0]])
-Best_path = np.vstack([Best_path[0], Best_path])
-
-axs[0].plot(Best_path[:, 0], Best_path[:, 1], color="green", alpha=0.1)
-
-# Draw start point
-# drawing_colored_circle = plt.Circle([0, 0], radius=10, color="red")
-
-# axs[0].add_artist(drawing_colored_circle)
-axs[0].plot([0], [0], marker="*", markersize=10, color="red")
-
-
-axs[0].set_title("Searched Best Solution")
 iterations = aco.iter_x
 best_record = aco.iter_y
-axs[1].plot(iterations, best_record)
-axs[1].set_title("Convergence Curve")
-plt.show()
+
+print(f"Best Path Length: {Best}")
+plot_util.plot_results(Best_path, iterations, best_record)
