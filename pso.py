@@ -15,10 +15,10 @@ class PSO(object):
         # 计算距离矩阵
         self.dis_mat = self.compute_dis_mat(num_city, self.location)  # 计算城市之间的距离矩阵
         # 初始化所有粒子
-        # self.particals = self.random_init(self.num, num_city)
-        self.particals = self.greedy_init(
-            self.dis_mat, num_total=self.num, num_city=num_city
-        )
+        self.particals = self.random_init(self.num, num_city)
+        # self.particals = self.greedy_init(
+        #     self.dis_mat, num_total=self.num, num_city=num_city
+        # )
         self.lenths = self.compute_paths(self.particals)
         # 得到初始化群体的最优解
         init_l = min(self.lenths)
@@ -253,9 +253,9 @@ class PSO(object):
 
 
 seed = 42
-num_drones = 10
-num_city = 30
-epochs = 3000
+num_drones = 30
+num_city = 500
+epochs = 2000
 
 # 固定随机数
 np.random.seed(seed)
